@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+protocol ReloadDataProtocol {
+    func didSelectCategory(_ category: Gender.Category)
+    func getPost(data: [SneakerPost.Post])
+    func getData(data: [SneakerModel])
+}

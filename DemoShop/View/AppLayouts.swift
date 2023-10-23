@@ -10,6 +10,52 @@ import UIKit
 class AppLayouts {
     static let shared = AppLayouts()
     
+    let activityIndicator = UIActivityIndicatorView(style: .large)
+    
+    func createLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { (sectionIndex, _) -> NSCollectionLayoutSection? in
+            guard let section = SectionKind(rawValue: sectionIndex) else { return nil }
+            var sectionMenuFooter: NSCollectionLayoutBoundarySupplementaryItem?
+            
+            switch section {
+            case .menu:
+                sectionMenuFooter = self.createSectionMenuFooter()
+                return self.createMenuSection(withFooter: sectionMenuFooter)
+            case .grid:
+                return self.createGridSection()
+            case .list:
+                return self.createListSection()
+            }
+        }
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.interSectionSpacing = 20
+        layout.configuration = config
+        return layout
+    }
+    
+    func setupActivityIndicator(vc: UIViewController) {
+        activityIndicator.center = vc.view.center
+        activityIndicator.color = .darkGray
+        activityIndicator.hidesWhenStopped = true
+        vc.view.addSubview(activityIndicator)
+    }
+    
+    func showActivityIndicator(vc: UIViewController) {
+        activityIndicator.startAnimating()
+        vc.view.isUserInteractionEnabled = false
+    }
+    
+    func hideActivityIndicator(vc: UIViewController) {
+        self.activityIndicator.stopAnimating()
+        vc.view.isUserInteractionEnabled = true
+    }
+    
+    func createSectionMenuFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50))
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize, elementKind: UICollectionView.elementKindSectionFooter, alignment: .bottom)
+        return footer
+    }
+    
     func createMenuSection(withFooter sectionFooter: NSCollectionLayoutBoundarySupplementaryItem?) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)

@@ -12,9 +12,7 @@ struct SneakerPost {
     struct Post {
         let image: UIImage
         let title: String
-        let date: String
-        let author: String
-        let link: URL
+        let link: URL?
     }
     var sneakerPosts: [Post]
 }

@@ -9,87 +9,67 @@ import UIKit
 
 class PostCell: UICollectionViewCell, SelfConfigureCellProtocol {
     
-    static var reuseId = "InfoCell"
+    static var reuseId = "PostCell"
     
-    lazy var postImgView: UIImageView = {
-        let catImg = UIImageView()
-        catImg.translatesAutoresizingMaskIntoConstraints = false
-        catImg.contentMode = .scaleAspectFit
-        catImg.clipsToBounds = true
-        catImg.layer.cornerRadius = 3
-        return catImg
-    }()
-
-    lazy var postLabel: UILabel = {
-        let catLabel = UILabel()
-        catLabel.translatesAutoresizingMaskIntoConstraints = false
-        catLabel.font = UIFont.systemFont(ofSize: 10,weight: .light)
-        catLabel.numberOfLines = 2
-        catLabel.textAlignment = .center
-        catLabel.textColor = .label.withAlphaComponent(0.8)
-        return catLabel
-    }()
-
+    var tapHandler: (() -> Void)?
+    
+    @objc func cellTapped() {
+        tapHandler?()
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .blue
-        configureCell()
-        configureConstrains()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        addGestureRecognizer(tapGesture)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    lazy var postImgView: UIImageView = {
+        let newsImg = UIImageView()
+        newsImg.translatesAutoresizingMaskIntoConstraints = false
+        newsImg.contentMode = .scaleAspectFit
+        newsImg.clipsToBounds = true
+        newsImg.layer.cornerRadius = 3
+        return newsImg
+    }()
 
-    func configureCell(){
-        self.backgroundColor = .clear
-        self.layer.cornerRadius = 5
-        addSubview(postImgView)
-        addSubview(postLabel)
-        postImgView.image = UIImage(systemName: "figure.walk.motion")
-        postLabel.text = "Text"
+    lazy var postLabel: UILabel = {
+        let newsLabel = UILabel()
+        newsLabel.translatesAutoresizingMaskIntoConstraints = false
+        newsLabel.font = UIFont.systemFont(ofSize: 12,weight: .light)
+        newsLabel.numberOfLines = 2
+        newsLabel.textAlignment = .center
+        newsLabel.textColor = .label.withAlphaComponent(0.8)
+        return newsLabel
+    }()
+    
+    func configureCell(with post: Any) {
+        if let post = post as? SneakerPost.Post {
+            self.backgroundColor = .clear
+            self.layer.cornerRadius = 5
+            contentView.addSubview(postImgView)
+            contentView.addSubview(postLabel)
+            
+            postImgView.image = post.image
+            postLabel.text = post.title
+            configureConstrains()
+        }
     }
 
-    func configureConstrains(){
+    func configureConstrains() {
         NSLayoutConstraint.activate([
-            postImgView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 3),
-            postImgView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),
-            postImgView.topAnchor.constraint(equalTo: topAnchor, constant: 3),
+            postImgView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 3),
+            postImgView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -3),
+            postImgView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 3),
             postImgView.heightAnchor.constraint(equalToConstant: 180),
             
-            postLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 3),
-            postLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),
-            postLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -3),
+            postLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 3),
+            postLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -3),
+            postLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -3),
             postLabel.topAnchor.constraint(equalTo: postImgView.bottomAnchor, constant: 3),
-            
         ])
-    }
-
-    func configure(with intValue: Int) {
-        //categoryLabel.text = String(intValue)
-    }
-}
-
-extension PostCell: PostProtocol {
-    func getPost(data: SneakerPost) {
-        
-    }
-}
-
-// MARK: - SwiftUI
-import SwiftUI
-
-struct InfoCellAdapter: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        return ViewController()
-    }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
-    }
-}
-
-struct InfoProvider: PreviewProvider {
-    static var previews: some View {
-        InfoCellAdapter()
     }
 }

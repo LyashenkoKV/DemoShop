@@ -20,6 +20,7 @@ class ShopViewController: UIViewController {
         .list: 0
     ]
     let activityIndicator = AppLayouts.shared.activityIndicator
+    private var shopViewControllerDataSource: ShopViewControllerDataSource!
     
     var sneakerPostManager = SneakerPostManager()
     var sneakerDataManager = SneakerManager()
@@ -28,7 +29,6 @@ class ShopViewController: UIViewController {
     
     var footerTitle = "Nike App Days"
     var footerSubTitle = "Celebrate with Member Exclusive Products, Giveaways, and More."
-    let dataLoadQueue = DispatchQueue(label: "Lyashenko-KV.DemoShop", attributes: .concurrent)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +46,7 @@ class ShopViewController: UIViewController {
     }
     
     func loadData(_ category: Gender.Category) {
+        let dataLoadQueue = DispatchQueue(label: "Lyashenko-KV.DemoShop", attributes: .concurrent)
         AppLayouts.shared.showActivityIndicator(vc: self)
         
         dataLoadQueue.async {
@@ -82,75 +83,8 @@ class ShopViewController: UIViewController {
         view.addSubview(collectionView)
     }
     
-    func configure<T: SelfConfigureCellProtocol>(cellType: T.Type, with intValue: Int, for indexPath: IndexPath) -> T {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseId, for: indexPath) as? T else {
-            fatalError("Error \(cellType)")
-        }
-        return cell
-    }
-    
-    private func setupDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<SectionKind, Int>(collectionView: collectionView,
-                                                                          cellProvider: { [ weak self ] (_, indexPath, itemIdentifier) -> UICollectionViewCell? in
-            guard let self = self else { return nil }
-            guard let section = SectionKind(rawValue: indexPath.section) else { return nil }
-            switch section {
-            case .menu:
-                let menuCell = self.configure(cellType: MenuCell.self, with: itemIdentifier, for: indexPath)
-                menuCell.delegate = self
-                return menuCell
-            case .grid:
-                if let post = self.sneakerPosts?[indexPath.row] {
-                    let postCell = self.configure(cellType: PostCell.self, with: itemIdentifier, for: indexPath)
-                    postCell.configureCell(with: post)
-                    return postCell
-                } else {
-                    return self.configure(cellType: PostCell.self, with: itemIdentifier, for: indexPath)
-                }
-            case .list:
-                if let data = self.sneakerData?[indexPath.row] {
-                    let itemCell = self.configure(cellType: ItemCell.self, with: itemIdentifier, for: indexPath)
-                    itemCell.configureCell(data)
-                    return itemCell
-                } else {
-                    return self.configure(cellType: ItemCell.self, with: itemIdentifier, for: indexPath)
-                }
-            }
-        })
-        dataSource.supplementaryViewProvider = { [ weak self ] (collectionView, kind, indexPath) -> UICollectionReusableView? in
-            guard let self = self else { return nil }
-            if kind == UICollectionView.elementKindSectionFooter {
-                let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: MenuFooterView.reuseId, for: indexPath) as? MenuFooterView
-                guard let section = SectionKind(rawValue: indexPath.section) else { return nil }
-                switch section {
-                case .menu:
-                    footerView?.titleLabel.text = self.footerTitle
-                    footerView?.subTitleLabel.text = self.footerSubTitle
-                default:
-                    break
-                }
-                return footerView
-            }
-            return nil
-        }
-    }
-    
-    func reloadData() {
-        guard let dataSource = dataSource else {
-            print("Ошибка: dataSource не инициализирован")
-            return
-        }
-        var snapshot = NSDiffableDataSourceSnapshot<SectionKind, Int>()
-        var itemOffset = 0
-        
-        SectionKind.allCases.forEach { (sectionKind) in
-            guard let itemCount = itemCountsPerSection[sectionKind] else { return }
-            let itemUpperbound = itemOffset + itemCount
-            snapshot.appendSections([sectionKind])
-            snapshot.appendItems(Array(itemOffset..<itemUpperbound))
-            itemOffset = itemUpperbound
-        }
-        dataSource.apply(snapshot, animatingDifferences: true)
+    func openWebPage(for post: SneakerPost.Post) {
+        shopViewControllerDataSource.openWebPage(for: post)
     }
 }
 
@@ -168,10 +102,12 @@ extension ShopViewController: ReloadDataProtocol {
     func getData(data: [SneakerModel]) {
         self.sneakerData = data
         self.itemCountsPerSection[.list] = sneakerData?.count
+        shopViewControllerDataSource = ShopViewControllerDataSource(viewController: self)
         
         DispatchQueue.main.async {
-            self.setupDataSource()
-            self.reloadData()
+            self.shopViewControllerDataSource.setupDataSource()
+            self.shopViewControllerDataSource.setupSupplementaryViewProvider()
+            self.shopViewControllerDataSource.reloadData()
         }
     }
 }

@@ -8,6 +8,7 @@
 import UIKit
 
 class MenuFooterView: UICollectionReusableView, SelfConfigureCellProtocol {
+    
     static var reuseId = "MenuFooterView"
     
     let titleLabel: UILabel = {
@@ -50,29 +51,10 @@ class MenuFooterView: UICollectionReusableView, SelfConfigureCellProtocol {
         ])
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func configureCell(with data: Any) {
     }
     
-    func configure(with intValue: Int) {
-        print("123")
-    }
-}
-
-// MARK: - SwiftUI
-import SwiftUI
-
-struct MenuFooterViewAdapter: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        return ViewController()
-    }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
-    }
-}
-
-struct MenuFooterViewProvider: PreviewProvider {
-    static var previews: some View {
-        MenuFooterViewAdapter()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

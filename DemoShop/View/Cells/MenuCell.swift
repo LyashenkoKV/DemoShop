@@ -9,8 +9,8 @@ import UIKit
 
 class MenuCell: UICollectionViewCell, SelfConfigureCellProtocol {
     static var reuseId = "MenuCell"
-    
-    let friendImageView = UIImageView()
+
+    var delegate: ReloadDataProtocol?
     
     var firstButton: UIButton!
     var secondButton: UIButton!
@@ -26,9 +26,9 @@ class MenuCell: UICollectionViewCell, SelfConfigureCellProtocol {
         setupUI()
         firstButton.isSelected = true
         firstUnderline.backgroundColor = .black
-        firstButton.addTarget(self, action: #selector(buttonOneTapped), for: .touchUpInside)
-        secondButton.addTarget(self, action: #selector(buttonTwoTapped), for: .touchUpInside)
-        thirdButton.addTarget(self, action: #selector(buttonThreeTapped), for: .touchUpInside)
+        firstButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        secondButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        thirdButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     func setupUI() {
@@ -109,47 +109,41 @@ class MenuCell: UICollectionViewCell, SelfConfigureCellProtocol {
         verticalStack1.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    @objc func buttonOneTapped() {
-        firstButton.isSelected = true
-        secondButton.isSelected = false
-        thirdButton.isSelected = false
-        firstUnderline.backgroundColor = .black
-        secondUnderline.backgroundColor = .clear
-        thirdUnderline.backgroundColor = .clear
+    @objc func buttonTapped(_ sender: UIButton) {
+        firstButton.isSelected = (sender == firstButton)
+        secondButton.isSelected = (sender == secondButton)
+        thirdButton.isSelected = (sender == thirdButton)
+        
+        firstUnderline.backgroundColor = (sender == firstButton) ? .black : .clear
+        secondUnderline.backgroundColor = (sender == secondButton) ? .black : .clear
+        thirdUnderline.backgroundColor = (sender == thirdButton) ? .black : .clear
+        
+        switch sender {
+        case firstButton:
+            delegate?.didSelectCategory(.men)
+        case secondButton:
+            delegate?.didSelectCategory(.women)
+        case thirdButton:
+            delegate?.didSelectCategory(.child)
+        default:
+            break
+        }
     }
     
-    @objc func buttonTwoTapped() {
-        firstButton.isSelected  = false
-        secondButton.isSelected  = true
-        firstUnderline.backgroundColor = .clear
-        secondUnderline.backgroundColor = .black
-        thirdUnderline.backgroundColor = .clear
-    }
-    
-    @objc func buttonThreeTapped() {
-        secondButton.isSelected  = false
-        thirdButton.isSelected  = true
-        firstUnderline.backgroundColor = .clear
-        secondUnderline.backgroundColor = .clear
-        thirdUnderline.backgroundColor = .black
+    func configureCell(with data: Any) {
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func configure(with intValue: Int) {
-        print("123")
-    }
 }
-
 
 // MARK: - SwiftUI
 import SwiftUI
 
 struct MenuCellViewControllerAdapter: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
-        return ViewController()
+        return ShopViewController()
     }
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         
@@ -161,3 +155,4 @@ struct MenuAdvancedProvider: PreviewProvider {
         ViewControllerAdapter()
     }
 }
+

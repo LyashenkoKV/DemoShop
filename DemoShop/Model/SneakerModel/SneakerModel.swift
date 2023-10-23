@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct SneakerModel: Decodable {
     let id: String
@@ -18,7 +19,7 @@ struct SneakerModel: Decodable {
     let releaseDate: String
     let releaseYear: String
     let links: SneakerLinksModel
-    let image: SneakerImageModel
+    var image: SneakerImageModel
     let story: String
 }
 
@@ -26,6 +27,19 @@ struct SneakerImageModel: Decodable {
     let original: String
     let small: String
     let thumbnail: String
+    var originalImage: UIImage?
+    
+    enum CodingKeys: String, CodingKey {
+        case original, small, thumbnail
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        original = try container.decode(String.self, forKey: .original)
+        small = try container.decode(String.self, forKey: .small)
+        thumbnail = try container.decode(String.self, forKey: .thumbnail)
+        originalImage = nil
+    }
 }
 
 struct SneakerLinksModel: Decodable {
