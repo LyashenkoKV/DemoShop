@@ -27,7 +27,7 @@ class ShopViewController: UIViewController {
     var sneakerPosts: [SneakerPost.Post]?
     var sneakerData: [SneakerModel]?
     
-    var footerTitle = "Nike App Days"
+    var footerTitle = "MNs SNKRs"
     var footerSubTitle = "Celebrate with Member Exclusive Products, Giveaways, and More."
 
     override func viewDidLoad() {
@@ -91,7 +91,14 @@ class ShopViewController: UIViewController {
 extension ShopViewController: ReloadDataProtocol {
     func didSelectCategory(_ category: Gender.Category) {
         self.loadData(category)
-        self.footerTitle = category.rawValue
+        switch category {
+        case .men:
+            self.footerTitle = "MNs SNKRs"
+        case .women:
+            self.footerTitle = "WMNs SNKRs"
+        case .child:
+            self.footerTitle = "KDs SNKRs"
+        }
     }
     
     func getPost(data: [SneakerPost.Post]) {
