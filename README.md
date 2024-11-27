@@ -1,52 +1,12 @@
-# DemoShop
+Пока все причесывают свой GitHub, я выложу свой факап.
 
-The "DemoShop" project is my personal pet project created for educational purposes. During the development of "DemoShop," I studied and applied the technologies of Compositional Layout, UICollectionViewDiffableDataSource, and the SwiftSoup library, which are used in iOS app development.
+Это тестовый проект - моя персональная боль) 
+Он принес мне убыток в 115.56$, из-за «условно» бесплатного API, где я превысил количество этих самых бесплатных запросов.
 
-## Description
-
-"DemoShop" is a mobile shopping application that allows users to browse and purchase high-quality footwear. The application also provides the opportunity to read news related to sneakers. The project utilizes modern Compositional Layout technology and the efficient data management mechanism of UICollectionViewDiffableDataSource to create dynamic and colorful interfaces.
-
-## Key Features
-
-- **Multilevel Menu**: The project includes a multilevel menu that allows users to choose product categories (men's, women's, children's footwear).
-
-- **Product Catalog**: Users can browse shoes from various brands and models in a convenient catalog.
-
-- **Detailed Product Cards**: Detailed cards with photos, descriptions, specifications, and prices are available for each pair of shoes.
-
-- **Sneaker News**: The application provides access to news and articles about sneakers and related topics.
-
-- **Interactive Elements**: Users can interact with interface elements by selecting categories and viewing product details.
-
-## Technologies
-
-- Compositional Layout: Efficient and flexible collection layout management.
-
-- UICollectionViewDiffableDataSource: A powerful tool for working with data and creating animated interface updates.
-
-- SwiftSoup: A library for parsing HTML data.
-
-- Swift: The programming language used for app development.
-
-## Running the Project
-
-To run the "DemoShop" project, follow these steps:
-
-1. Clone the repository to your computer.
-
-2. Open the project in Xcode.
-
-3. Build and run the application on a simulator or a real device.
-
-## Author
-
-Konstantin Lyashenko
-
-Email: lyashenkokv@gmail.com
-
-GitHub: https://github.com/LyashenkoKV
-
-Thank you for using our app!
+Но я все равно считаю, что это очень крутой экспериенс, по той причине, что в данном проекте я попробовал несколько интересных технологий:
+1. Это Diffable Data Source в купе с CompositionalLayout;
+2. Это Web Scraping через библиотеку SwiftSoup, для загрузки анонсов новостей в мире кроссовок;
+3. WebView, для открытия этих самых новостей.
 
 
 # "DemoShop"
